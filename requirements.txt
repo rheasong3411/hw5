@@ -1,0 +1,6 @@
+fastmcp
+pydantic-ai
+python-dotenv
+fastapi
+uvicorn
+pytest

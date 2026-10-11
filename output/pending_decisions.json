@@ -1,0 +1,42 @@
+[
+  {
+    "decision_id": "17ebdc44-133d-435b-a44e-8a6669b714cf",
+    "ticket_id": 101,
+    "kind": "fulfillment",
+    "question": "How should we handle the one-unit shortfall for the customer's CC-TEE-WHITE size S order?",
+    "recommendation": "Defer fulfillment until restock is confirmed. Current stock is 0 (shortfall 1); the linked vendor invoice is open and shipping-blocking, so do not promise an arrival date. Refer to the unsent customer draft explaining the stockout and shipping constraint.",
+    "options": [
+      "accept recommendation",
+      "decline",
+      "custom"
+    ],
+    "created_at": "2026-10-11T09:25:07.981914+00:00",
+    "requested_by": "agent",
+    "session_id": "57ca3122-cfec-4520-85e8-bbc1b3e053ae",
+    "status": "decided",
+    "decided_by": "Rhea",
+    "choice": "accept recommendation",
+    "terms": "Defer Tauhid Zaman's 1 \u00d7 CC-TEE-WHITE size S order until a Bulldog Print Co restock is confirmed; review the customer draft before sending; no delivery date promised.",
+    "decided_at": "2026-10-11T09:30:12.290032+00:00"
+  },
+  {
+    "decision_id": "e8a4d9b5-e742-4e58-8f07-6b1ea438492c",
+    "ticket_id": 103,
+    "kind": "discount",
+    "question": "For Yale AI Club's request for 20 size-M CC-HOOD-NAVY hoodies, what is the explicit discount decision for the 8 currently in stock? If approving, specify the discount percentage, unit price, and any conditions. Also decide whether the discount would apply to any additional units if replenishment is later confirmed.",
+    "recommendation": "No discount terms have been verified; obtain Boss's explicit decision before sending any customer-facing pricing.",
+    "options": [
+      "Decline the discount request",
+      "Approve a discount for available units (specify percentage, unit price, and conditions)",
+      "Other (specify)"
+    ],
+    "created_at": "2026-10-11T09:33:56.464684+00:00",
+    "requested_by": "agent",
+    "session_id": "57ca3122-cfec-4520-85e8-bbc1b3e053ae",
+    "status": "decided",
+    "decided_by": "Rhea",
+    "choice": "Approve a discount for available units (specify percentage, unit price, and conditions)",
+    "terms": "Approve 10% off list on the 8 CC-HOOD-NAVY size M hoodies in stock: $52.20 per unit, $417.60 total. No discount or delivery promise on the remaining 12 units. Customer draft to be reviewed before sending.",
+    "decided_at": "2026-10-11T09:36:27.240268+00:00"
+  }
+]

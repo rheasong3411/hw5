@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campus Customs · Resolved Board</title>
+  <style>
+    :root{--navy:#17334f;--cream:#f8f1e5;--wood:#bc8e60;--paper:#fffaf0;--amber:#d49a3a;--ink:#23364b;--green:#5e836b}
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#e8dfd1,#d5c2aa);color:var(--ink);font:15px/1.5 system-ui,sans-serif}
+    header{padding:28px 7%;background:var(--navy);color:var(--cream);border-bottom:8px solid var(--amber)}h1{margin:0;font:700 32px Georgia,serif}header p{margin:4px 0 0;color:#c9d8e2}.wrap{max-width:1180px;margin:auto;padding:28px 20px}.reconcile{margin-bottom:22px;padding:15px 18px;background:var(--paper);border-left:7px solid var(--green);box-shadow:4px 5px #b9936e;font-weight:700}.grid{display:grid;grid-template-columns:1fr;gap:24px}.card{overflow:hidden;background:var(--paper);border:1px solid #c9b292;border-radius:10px;box-shadow:5px 7px #b9936e}.card img{display:block;width:100%;height:auto}.caption{padding:16px}.caption h2{margin:0;color:var(--navy);font:700 20px Georgia,serif}.status{display:inline-block;margin:8px 0;padding:3px 8px;border-radius:12px;color:white;background:var(--green);font-size:11px;font-weight:700}.caption p{margin:5px 0;color:#526579;font-size:13px}.cash{color:var(--navy);font-weight:700}
+  </style>
+</head>
+<body>
+  <header><h1>Campus Customs · Resolved Board</h1><p>Problem 9 · final session 57ca3122-cfec-4520-85e8-bbc1b3e053ae · final board evidence and cash reconciliation</p></header>
+  <main class="wrap">
+    <div class="reconcile">Cash reconciliation: $3,400.00 − $840.00 − $2,400.00 = $160.00 · matches checking in data/campus_customs_new.db.</div>
+    <section class="grid">
+      <article class="card"><a href="screenshots/board_ticket_101.png"><img src="screenshots/board_ticket_101.png" alt="Ticket 101 board screenshot"></a><div class="caption"><h2>Ticket 101 · Bulldog tee</h2><p class="status">Resolved after payment and fulfillment disposition</p><p>Run 4dd82f176e0d4f69a0786497643c3982 · Rhea approved invoice 501 ($840.00) at 2026-10-11 09:29:23.470044Z, then recorded fulfillment decision at 09:30:12.297117Z: defer the unfulfilled tee until restock is confirmed; review draft before sending; no delivery date promised.</p><p class="cash">Cash effect: −$840.00 · checking after payment: $2,560.00.</p></div></article>
+      <article class="card"><a href="screenshots/board_ticket_102.png"><img src="screenshots/board_ticket_102.png" alt="Ticket 102 board screenshot"></a><div class="caption"><h2>Ticket 102 · Rent due</h2><p class="status">Resolved after approved rent payment</p><p>Run 9a9511c4c46345038c1e1878fa1a1b3a · Rhea approved lease 1 rent ($2,400.00) at 2026-10-11 09:33:05.654455Z. Lease next_due advanced to 2026-10-02; no landlord message was sent.</p><p class="cash">Cash effect: −$2,400.00 · checking after payment: $160.00.</p></div></article>
+      <article class="card"><a href="screenshots/board_ticket_103.png"><img src="screenshots/board_ticket_103.png" alt="Ticket 103 board screenshot"></a><div class="caption"><h2>Ticket 103 · Bulk hoodie discount</h2><p class="status">Resolved after PO rejection and discount decision</p><p>Run 1ce25873405c4f9bb0056a09a0406a53 · Rhea rejected the $264.00 PO at 09:36:08.718690Z, then at 09:36:27.246836Z recorded 10% off the 8 in-stock units: $52.20 each, $417.60 total; no discount or delivery promise for the remaining 12, draft review before sending. The PO rejection alone left the ticket awaiting_decision.</p><p class="cash">Cash effect: $0.00 · checking remains $160.00.</p></div></article>
+    </section>
+  </main>
+</body>
+</html>

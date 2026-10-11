@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+
+# Source archive (data/ already contains both databases)
+data.zip
+hw5.zip
+# Runtime lock files for pending requests/decisions
+*.lock
+.pytest_cache/

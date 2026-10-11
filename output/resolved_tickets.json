@@ -1,0 +1,677 @@
+{
+  "summary": {
+    "starting_balance": 3400.0,
+    "payments": [
+      {
+        "id": 1,
+        "kind": "invoice",
+        "ref_id": 501,
+        "amount": 840.0,
+        "approved_by": "Rhea",
+        "request_id": "b2e78b94-6e1b-43fd-b449-8176eab7c7b1"
+      },
+      {
+        "id": 2,
+        "kind": "rent",
+        "ref_id": 1,
+        "amount": 2400.0,
+        "approved_by": "Rhea",
+        "request_id": "85a18ef3-76ca-4aaa-bcde-30eb6735e893"
+      }
+    ],
+    "ending_balance": 160.0,
+    "reconciles": true
+  },
+  "tickets": [
+    {
+      "id": 101,
+      "subject": "Bulldog tee",
+      "final_status": "resolved",
+      "session_id": "57ca3122-cfec-4520-85e8-bbc1b3e053ae",
+      "run_id": "4dd82f176e0d4f69a0786497643c3982",
+      "returned_models": [
+        {
+          "model_name": "gpt-6-luna-global",
+          "provider_name": "openai"
+        }
+      ],
+      "delegation_attempts": 11,
+      "delegation_successes": 6,
+      "delegations": [
+        {
+          "from": "boss",
+          "to": "inventory",
+          "result": "successful"
+        },
+        {
+          "from": "boss",
+          "to": "accounting",
+          "result": "successful"
+        },
+        {
+          "from": "boss",
+          "to": "customer_service",
+          "result": "successful"
+        },
+        {
+          "from": "customer_service",
+          "to": "customer_service",
+          "result": "refused",
+          "reason": "Delegation refused: an agent cannot delegate to itself."
+        },
+        {
+          "from": "inventory",
+          "to": "inventory",
+          "result": "refused",
+          "reason": "Delegation refused: an agent cannot delegate to itself."
+        },
+        {
+          "from": "customer_service",
+          "to": "inventory",
+          "result": "successful"
+        },
+        {
+          "from": "customer_service",
+          "to": "accounting",
+          "result": "successful"
+        },
+        {
+          "from": "inventory",
+          "to": "inventory",
+          "result": "refused",
+          "reason": "Delegation refused: an agent cannot delegate to itself."
+        },
+        {
+          "from": "accounting",
+          "to": "customer_service",
+          "result": "refused",
+          "reason": "Delegation refused: customer_service is already on this delegation path; return your findings instead of delegating back."
+        },
+        {
+          "from": "inventory",
+          "to": "accounting",
+          "result": "successful"
+        },
+        {
+          "from": "accounting",
+          "to": "inventory",
+          "result": "refused",
+          "reason": "Delegation refused: inventory is already on this delegation path; return your findings instead of delegating back."
+        }
+      ],
+      "tools_by_agent": [
+        {
+          "agent": "accounting",
+          "tools": [
+            "append_ticket_note",
+            "find_restock_vendors",
+            "get_cash_balance",
+            "inspect_customer_order",
+            "list_decisions",
+            "list_open_tickets",
+            "list_payments",
+            "list_pending_requests",
+            "list_requests",
+            "prepare_payment"
+          ]
+        },
+        {
+          "agent": "boss",
+          "tools": [
+            "append_ticket_note",
+            "get_cash_balance",
+            "inspect_customer_order",
+            "list_open_tickets",
+            "list_requests",
+            "request_human_decision"
+          ]
+        },
+        {
+          "agent": "customer_service",
+          "tools": [
+            "append_ticket_note",
+            "inspect_customer_order"
+          ]
+        },
+        {
+          "agent": "inventory",
+          "tools": [
+            "find_restock_vendors",
+            "inspect_customer_order",
+            "list_pending_requests",
+            "list_requests",
+            "list_tickets"
+          ]
+        }
+      ],
+      "status_timeline": [
+        {
+          "from": "open",
+          "to": "awaiting_approval",
+          "timestamp": "2026-10-11T09:25:25.506809Z"
+        },
+        {
+          "from": "awaiting_approval",
+          "to": "awaiting_decision",
+          "timestamp": "2026-10-11T09:29:29.591817Z"
+        },
+        {
+          "from": "awaiting_decision",
+          "to": "resolved",
+          "timestamp": "2026-10-11T09:30:18.397826Z"
+        }
+      ],
+      "payment_requests": [
+        {
+          "request_id": "b2e78b94-6e1b-43fd-b449-8176eab7c7b1",
+          "kind": "invoice",
+          "ref_id": 501,
+          "amount": 840.0,
+          "account": "checking",
+          "requested_by": "accounting",
+          "status": "approved_and_paid",
+          "decided_by": "Rhea",
+          "human_action_at": "2026-10-11T09:29:23.470044Z",
+          "cash_effect": -840.0
+        }
+      ],
+      "decision_requests": [
+        {
+          "decision_id": "17ebdc44-133d-435b-a44e-8a6669b714cf",
+          "kind": "fulfillment",
+          "requested_by": "boss",
+          "decided_by": "Rhea",
+          "decided_at": "2026-10-11T09:30:12.290032+00:00",
+          "choice": "accept recommendation",
+          "terms": "Defer Tauhid Zaman's 1 \u00d7 CC-TEE-WHITE size S order until a Bulldog Print Co restock is confirmed; review the customer draft before sending; no delivery date promised."
+        }
+      ],
+      "human_actions": [
+        {
+          "action": "human_approval",
+          "timestamp": "2026-10-11T09:29:23.470044Z",
+          "actor": "Rhea",
+          "detail": {
+            "request_id": "b2e78b94-6e1b-43fd-b449-8176eab7c7b1",
+            "actor": "Rhea",
+            "result": {
+              "paid": true,
+              "request_id": "b2e78b94-6e1b-43fd-b449-8176eab7c7b1",
+              "kind": "invoice",
+              "ref_id": 501,
+              "amount": 840.0,
+              "remaining_cash": 2560.0
+            }
+          }
+        },
+        {
+          "action": "human_decision",
+          "timestamp": "2026-10-11T09:30:12.297117Z",
+          "actor": "Rhea",
+          "detail": {
+            "decided": true,
+            "decision_id": "17ebdc44-133d-435b-a44e-8a6669b714cf",
+            "ticket_id": 101,
+            "kind": "fulfillment",
+            "question": "How should we handle the one-unit shortfall for the customer's CC-TEE-WHITE size S order?",
+            "recommendation": "Defer fulfillment until restock is confirmed. Current stock is 0 (shortfall 1); the linked vendor invoice is open and shipping-blocking, so do not promise an arrival date. Refer to the unsent customer draft explaining the stockout and shipping constraint.",
+            "options": [
+              "accept recommendation",
+              "decline",
+              "custom"
+            ],
+            "created_at": "2026-10-11T09:25:07.981914+00:00",
+            "requested_by": "agent",
+            "session_id": "57ca3122-cfec-4520-85e8-bbc1b3e053ae",
+            "status": "decided",
+            "decided_by": "Rhea",
+            "choice": "accept recommendation",
+            "terms": "Defer Tauhid Zaman's 1 \u00d7 CC-TEE-WHITE size S order until a Bulldog Print Co restock is confirmed; review the customer draft before sending; no delivery date promised.",
+            "decided_at": "2026-10-11T09:30:12.290032+00:00"
+          }
+        }
+      ],
+      "final_disposition": "Invoice 501 was paid after Rhea approved it; the unfulfilled one-unit tee order was explicitly deferred under Rhea\u2019s recorded fulfillment decision. The customer draft remained subject to review and no arrival date was promised.",
+      "outcome": "Invoice 501 was paid after Rhea approved it; the unfulfilled one-unit tee order was explicitly deferred under Rhea\u2019s recorded fulfillment decision. The customer draft remained subject to review and no arrival date was promised.",
+      "cash_change": -840.0,
+      "model_usage": {
+        "requests": 33,
+        "total_tokens": 78243
+      },
+      "agents": [
+        "accounting",
+        "boss",
+        "customer_service",
+        "inventory"
+      ],
+      "tools_used": [
+        "append_ticket_note",
+        "find_restock_vendors",
+        "get_cash_balance",
+        "inspect_customer_order",
+        "list_decisions",
+        "list_open_tickets",
+        "list_payments",
+        "list_pending_requests",
+        "list_requests",
+        "list_tickets",
+        "prepare_payment",
+        "request_human_decision"
+      ],
+      "fulfillment_decision": {
+        "decision_id": "17ebdc44-133d-435b-a44e-8a6669b714cf",
+        "kind": "fulfillment",
+        "requested_by": "boss",
+        "decided_by": "Rhea",
+        "decided_at": "2026-10-11T09:30:12.290032+00:00",
+        "choice": "accept recommendation",
+        "terms": "Defer Tauhid Zaman's 1 \u00d7 CC-TEE-WHITE size S order until a Bulldog Print Co restock is confirmed; review the customer draft before sending; no delivery date promised."
+      }
+    },
+    {
+      "id": 102,
+      "subject": "Rent due",
+      "final_status": "resolved",
+      "session_id": "57ca3122-cfec-4520-85e8-bbc1b3e053ae",
+      "run_id": "9a9511c4c46345038c1e1878fa1a1b3a",
+      "returned_models": [
+        {
+          "model_name": "gpt-6-luna-global",
+          "provider_name": "openai"
+        }
+      ],
+      "delegation_attempts": 7,
+      "delegation_successes": 5,
+      "delegations": [
+        {
+          "from": "boss",
+          "to": "facilities",
+          "result": "successful"
+        },
+        {
+          "from": "boss",
+          "to": "accounting",
+          "result": "successful"
+        },
+        {
+          "from": "accounting",
+          "to": "accounting",
+          "result": "refused",
+          "reason": "Delegation refused: an agent cannot delegate to itself."
+        },
+        {
+          "from": "facilities",
+          "to": "accounting",
+          "result": "successful"
+        },
+        {
+          "from": "accounting",
+          "to": "facilities",
+          "result": "successful"
+        },
+        {
+          "from": "accounting",
+          "to": "accounting",
+          "result": "refused",
+          "reason": "Delegation refused: an agent cannot delegate to itself."
+        },
+        {
+          "from": "boss",
+          "to": "accounting",
+          "result": "successful"
+        }
+      ],
+      "tools_by_agent": [
+        {
+          "agent": "accounting",
+          "tools": [
+            "append_ticket_note",
+            "get_cash_balance",
+            "inspect_rent_notice",
+            "list_pending_requests",
+            "prepare_payment"
+          ]
+        },
+        {
+          "agent": "boss",
+          "tools": [
+            "append_ticket_note",
+            "get_cash_balance",
+            "inspect_rent_notice",
+            "list_open_tickets",
+            "list_pending_requests",
+            "list_requests"
+          ]
+        },
+        {
+          "agent": "facilities",
+          "tools": [
+            "inspect_rent_notice",
+            "list_pending_requests",
+            "list_tickets"
+          ]
+        }
+      ],
+      "status_timeline": [
+        {
+          "from": "open",
+          "to": "awaiting_approval",
+          "timestamp": "2026-10-11T09:32:06.014345Z"
+        },
+        {
+          "from": "awaiting_approval",
+          "to": "resolved",
+          "timestamp": "2026-10-11T09:33:10.452213Z"
+        }
+      ],
+      "payment_requests": [
+        {
+          "request_id": "85a18ef3-76ca-4aaa-bcde-30eb6735e893",
+          "kind": "rent",
+          "ref_id": 1,
+          "amount": 2400.0,
+          "account": "checking",
+          "requested_by": "accounting",
+          "status": "approved_and_paid",
+          "decided_by": "Rhea",
+          "human_action_at": "2026-10-11T09:33:05.654455Z",
+          "cash_effect": -2400.0
+        }
+      ],
+      "decision_requests": [],
+      "human_actions": [
+        {
+          "action": "human_approval",
+          "timestamp": "2026-10-11T09:33:05.654455Z",
+          "actor": "Rhea",
+          "detail": {
+            "request_id": "85a18ef3-76ca-4aaa-bcde-30eb6735e893",
+            "actor": "Rhea",
+            "result": {
+              "paid": true,
+              "request_id": "85a18ef3-76ca-4aaa-bcde-30eb6735e893",
+              "kind": "rent",
+              "ref_id": 1,
+              "amount": 2400.0,
+              "remaining_cash": 160.0
+            }
+          }
+        }
+      ],
+      "final_disposition": "Rhea approved and paid lease 1 rent of $2,400.00. Lease next_due advanced to 2026-10-02; no landlord message was sent.",
+      "outcome": "Rhea approved and paid lease 1 rent of $2,400.00. Lease next_due advanced to 2026-10-02; no landlord message was sent.",
+      "cash_change": -2400.0,
+      "model_usage": {
+        "requests": 30,
+        "total_tokens": 66460
+      },
+      "agents": [
+        "accounting",
+        "boss",
+        "facilities"
+      ],
+      "tools_used": [
+        "append_ticket_note",
+        "get_cash_balance",
+        "inspect_rent_notice",
+        "list_open_tickets",
+        "list_pending_requests",
+        "list_requests",
+        "list_tickets",
+        "prepare_payment"
+      ]
+    },
+    {
+      "id": 103,
+      "subject": "Bulk hoodie discount",
+      "final_status": "resolved",
+      "session_id": "57ca3122-cfec-4520-85e8-bbc1b3e053ae",
+      "run_id": "1ce25873405c4f9bb0056a09a0406a53",
+      "returned_models": [
+        {
+          "model_name": "gpt-6-luna-global",
+          "provider_name": "openai"
+        }
+      ],
+      "delegation_attempts": 12,
+      "delegation_successes": 6,
+      "delegations": [
+        {
+          "from": "boss",
+          "to": "inventory",
+          "result": "successful"
+        },
+        {
+          "from": "boss",
+          "to": "accounting",
+          "result": "successful"
+        },
+        {
+          "from": "boss",
+          "to": "customer_service",
+          "result": "successful"
+        },
+        {
+          "from": "inventory",
+          "to": "inventory",
+          "result": "refused",
+          "reason": "Delegation refused: an agent cannot delegate to itself."
+        },
+        {
+          "from": "customer_service",
+          "to": "inventory",
+          "result": "successful"
+        },
+        {
+          "from": "customer_service",
+          "to": "accounting",
+          "result": "successful"
+        },
+        {
+          "from": "customer_service",
+          "to": "boss",
+          "result": "refused",
+          "reason": "Delegation refused: boss is already on this delegation path; return your findings instead of delegating back."
+        },
+        {
+          "from": "inventory",
+          "to": "inventory",
+          "result": "refused",
+          "reason": "Delegation refused: an agent cannot delegate to itself."
+        },
+        {
+          "from": "accounting",
+          "to": "inventory",
+          "result": "successful"
+        },
+        {
+          "from": "inventory",
+          "to": "inventory",
+          "result": "refused",
+          "reason": "Delegation refused: an agent cannot delegate to itself."
+        },
+        {
+          "from": "inventory",
+          "to": "accounting",
+          "result": "refused",
+          "reason": "Delegation refused: this run already used the six-delegation limit; finish with the evidence you have."
+        },
+        {
+          "from": "inventory",
+          "to": "accounting",
+          "result": "refused",
+          "reason": "Delegation refused: accounting is already on this delegation path; return your findings instead of delegating back."
+        }
+      ],
+      "tools_by_agent": [
+        {
+          "agent": "accounting",
+          "tools": [
+            "append_ticket_note",
+            "get_cash_balance",
+            "inspect_price_override",
+            "list_decisions",
+            "list_payments",
+            "list_pending_requests",
+            "list_requests"
+          ]
+        },
+        {
+          "agent": "boss",
+          "tools": [
+            "append_ticket_note",
+            "find_restock_vendors",
+            "get_cash_balance",
+            "inspect_price_override",
+            "list_decisions",
+            "list_open_tickets",
+            "list_pending_requests",
+            "list_requests",
+            "request_human_decision"
+          ]
+        },
+        {
+          "agent": "customer_service",
+          "tools": [
+            "append_ticket_note",
+            "inspect_price_override",
+            "list_tickets",
+            "request_human_decision"
+          ]
+        },
+        {
+          "agent": "inventory",
+          "tools": [
+            "find_restock_vendors",
+            "inspect_price_override",
+            "list_pending_requests",
+            "list_requests",
+            "prepare_purchase_order"
+          ]
+        }
+      ],
+      "status_timeline": [
+        {
+          "from": "open",
+          "to": "awaiting_approval",
+          "timestamp": "2026-10-11T09:35:03.563828Z"
+        },
+        {
+          "from": "awaiting_approval",
+          "to": "awaiting_decision",
+          "timestamp": "2026-10-11T09:36:13.554604Z"
+        },
+        {
+          "from": "awaiting_decision",
+          "to": "resolved",
+          "timestamp": "2026-10-11T09:36:32.159209Z"
+        }
+      ],
+      "payment_requests": [
+        {
+          "request_id": "7eeaac61-92c0-4bb6-92f5-4cfbf2d521dd",
+          "kind": "purchase_order",
+          "sku": "CC-HOOD-NAVY",
+          "size": "M",
+          "qty": 12,
+          "amount": 264.0,
+          "account": "checking",
+          "requested_by": "inventory",
+          "status": "rejected",
+          "decided_by": "Rhea",
+          "human_action_at": "2026-10-11T09:36:08.718690Z",
+          "cash_effect": 0.0
+        }
+      ],
+      "decision_requests": [
+        {
+          "decision_id": "e8a4d9b5-e742-4e58-8f07-6b1ea438492c",
+          "kind": "discount",
+          "requested_by": "customer_service",
+          "decided_by": "Rhea",
+          "decided_at": "2026-10-11T09:36:27.240268+00:00",
+          "choice": "Approve a discount for available units (specify percentage, unit price, and conditions)",
+          "terms": "Approve 10% off list on the 8 CC-HOOD-NAVY size M hoodies in stock: $52.20 per unit, $417.60 total. No discount or delivery promise on the remaining 12 units. Customer draft to be reviewed before sending."
+        }
+      ],
+      "human_actions": [
+        {
+          "action": "human_rejection",
+          "timestamp": "2026-10-11T09:36:08.718690Z",
+          "actor": "Rhea",
+          "detail": {
+            "request_id": "7eeaac61-92c0-4bb6-92f5-4cfbf2d521dd",
+            "actor": "Rhea",
+            "result": {
+              "rejected": true,
+              "request_id": "7eeaac61-92c0-4bb6-92f5-4cfbf2d521dd",
+              "rejected_by": "Rhea"
+            }
+          }
+        },
+        {
+          "action": "human_decision",
+          "timestamp": "2026-10-11T09:36:27.246836Z",
+          "actor": "Rhea",
+          "detail": {
+            "decided": true,
+            "decision_id": "e8a4d9b5-e742-4e58-8f07-6b1ea438492c",
+            "ticket_id": 103,
+            "kind": "discount",
+            "question": "For Yale AI Club's request for 20 size-M CC-HOOD-NAVY hoodies, what is the explicit discount decision for the 8 currently in stock? If approving, specify the discount percentage, unit price, and any conditions. Also decide whether the discount would apply to any additional units if replenishment is later confirmed.",
+            "recommendation": "No discount terms have been verified; obtain Boss's explicit decision before sending any customer-facing pricing.",
+            "options": [
+              "Decline the discount request",
+              "Approve a discount for available units (specify percentage, unit price, and conditions)",
+              "Other (specify)"
+            ],
+            "created_at": "2026-10-11T09:33:56.464684+00:00",
+            "requested_by": "agent",
+            "session_id": "57ca3122-cfec-4520-85e8-bbc1b3e053ae",
+            "status": "decided",
+            "decided_by": "Rhea",
+            "choice": "Approve a discount for available units (specify percentage, unit price, and conditions)",
+            "terms": "Approve 10% off list on the 8 CC-HOOD-NAVY size M hoodies in stock: $52.20 per unit, $417.60 total. No discount or delivery promise on the remaining 12 units. Customer draft to be reviewed before sending.",
+            "decided_at": "2026-10-11T09:36:27.240268+00:00"
+          }
+        }
+      ],
+      "final_disposition": "Rhea rejected the $264.00 PO, then recorded the explicit 10% discount for the 8 available units. The ticket remained awaiting_decision after rejection and resolved after this discount disposition. No price update or sale was recorded.",
+      "outcome": "Rhea rejected the $264.00 PO, then recorded the explicit 10% discount for the 8 available units. The ticket remained awaiting_decision after rejection and resolved after this discount disposition. No price update or sale was recorded.",
+      "cash_change": 0.0,
+      "model_usage": {
+        "requests": 37,
+        "total_tokens": 94452
+      },
+      "agents": [
+        "accounting",
+        "boss",
+        "customer_service",
+        "inventory"
+      ],
+      "tools_used": [
+        "append_ticket_note",
+        "find_restock_vendors",
+        "get_cash_balance",
+        "inspect_price_override",
+        "list_decisions",
+        "list_open_tickets",
+        "list_payments",
+        "list_pending_requests",
+        "list_requests",
+        "list_tickets",
+        "prepare_purchase_order",
+        "request_human_decision"
+      ],
+      "discount_decision": {
+        "decision_id": "e8a4d9b5-e742-4e58-8f07-6b1ea438492c",
+        "kind": "discount",
+        "requested_by": "customer_service",
+        "decided_by": "Rhea",
+        "decided_at": "2026-10-11T09:36:27.240268+00:00",
+        "choice": "Approve a discount for available units (specify percentage, unit price, and conditions)",
+        "terms": "Approve 10% off list on the 8 CC-HOOD-NAVY size M hoodies in stock: $52.20 per unit, $417.60 total. No discount or delivery promise on the remaining 12 units. Customer draft to be reviewed before sending."
+      }
+    }
+  ]
+}

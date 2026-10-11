@@ -1,0 +1,41 @@
+[
+  {
+    "request_id": "b2e78b94-6e1b-43fd-b449-8176eab7c7b1",
+    "kind": "invoice",
+    "ref_id": 501,
+    "amount": 840.0,
+    "account": "checking",
+    "ticket_id": 101,
+    "session_id": "57ca3122-cfec-4520-85e8-bbc1b3e053ae",
+    "status": "used",
+    "available_cash_at_request": 3400.0,
+    "approved_by": "Rhea"
+  },
+  {
+    "request_id": "85a18ef3-76ca-4aaa-bcde-30eb6735e893",
+    "kind": "rent",
+    "ref_id": 1,
+    "amount": 2400.0,
+    "account": "checking",
+    "ticket_id": 102,
+    "session_id": "57ca3122-cfec-4520-85e8-bbc1b3e053ae",
+    "status": "used",
+    "available_cash_at_request": 2560.0,
+    "approved_by": "Rhea"
+  },
+  {
+    "request_id": "7eeaac61-92c0-4bb6-92f5-4cfbf2d521dd",
+    "kind": "purchase_order",
+    "sku": "CC-HOOD-NAVY",
+    "size": "M",
+    "vendor_id": 1,
+    "amount": 264.0,
+    "account": "checking",
+    "ticket_id": 103,
+    "session_id": "57ca3122-cfec-4520-85e8-bbc1b3e053ae",
+    "expected_arrival": "2026-09-05",
+    "status": "rejected",
+    "available_cash_at_request": 160.0,
+    "rejected_by": "Rhea"
+  }
+]

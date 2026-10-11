@@ -1,0 +1,232 @@
+{
+  "vibe_coder": "Codex (gpt-6-luna via Portkey)",
+  "note": "Smoke test was re-run after the final Problem 9 full run (gpt-6-luna, decision flow) so it reflects the final working-database state.",
+  "connection": {
+    "project_file": ".mcp.json",
+    "codex_mcp_list": "campus-customs"
+  },
+  "tests": [
+    {
+      "prompt": "Ticket 101 is a customer order for a size-S Bulldog tee. Use the campus-customs MCP tool inspect_customer_order with ticket_id 101 and report the stock on hand, shortfall, linked invoice, whether it is overdue, and whether the vendor's shipping is blocked.",
+      "tool_name": "inspect_customer_order",
+      "tool_arguments": {
+        "ticket_id": 101
+      },
+      "tool_output": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"found\":true,\"ticket_id\":101,\"shop_today\":\"2026-08-31\",\"ticket\":{\"id\":101,\"type\":\"customer_order\",\"requester\":\"Tauhid Zaman\",\"subject\":\"Bulldog tee\",\"sku\":\"CC-TEE-WHITE\",\"size\":\"S\",\"qty\":1,\"lease_id\":null,\"invoice_id\":501,\"status\":\"resolved\",\"notes\":\"Needs a tee in size S.\\n[2026-08-31] accounting: Accounting review (shop date 2026-08-31): Linked invoice 501, Bulldog Print Co, is open for $840.00, due 2026-08-28 (3 days overdue per inspection), for rush reprint CC-TEE-WHITE S. Inspection shows shipping blocked and size S stock 0 (shortfall 1). Checking balance is $3,400.00; invoice amount is supported and funds are sufficient. Prepared invoice payment request b2e78b94-6e1b-43fd-b449-8176eab7c7b1 for exactly $840.00 from checking; status pending human approval only. No payment executed. Human decision required: approve or decline this invoice payment request. Vendor lead time is 5 days, so shipping timing remains dependent on vendor fulfillment.\\n[2026-08-31] accounting: Accounting check (shop date 2026-08-31): Linked invoice 501 is open and overdue (due 2026-08-28). A payment request for the invoice is pending human review; no approval decision or completed payment is recorded. This pending request is not evidence of approval/payment. Shipping remains blocked per order inspection (size S inventory is 0 and invoice status is open/overdue). Do not state that the order is ready to ship; keep invoice/payment details internal in customer-facing drafts.\\n[2026-08-31] customer_service: 2026-08-31 — DRAFT — NOT SENT\\n\\nHello,\\n\\nWe’re sorry, but we currently have no Classic Bulldog Tee in size S available; the requested size is out of stock. A restock has not been confirmed. The supplier’s listed lead time is five days, but its shipment is currently blocked, so we can’t provide a reliable arrival date or promise when the item will be available. We’ll need to confirm that restocking can proceed before we can give you an update on timing.\\n\\nThank you for your understanding.\\n\\nInternal review: Inventory confirmed zero on hand and a shortfall of one. Accounting reports the related payment request is pending human review, with no approval or payment recorded. Boss/human review is required before any final customer response or resolution. Ticket status remains open.\\n[2026-08-31] boss: Manager review (shop date 2026-08-31): MCP inspection shows requested CC-TEE-WHITE, size S, qty 1; on-hand 0, shortfall 1. Linked invoice 501 to Bulldog Print Co is open, $840, due 2026-08-28 (3 days overdue), and shipping-blocking. Vendor listed lead_days=5, but that is not a confirmed arrival estimate while shipping is blocked. Checking balance is $3,400; accounting prepared invoice payment request b2e78b94-6e1b-43fd-b449-8176eab7c7b1 for $840, verified in requests as pending; no payment has occurred. Inventory found Bulldog Print Co as matching apparel/reprint vendor; no PO was prepared because the unpaid invoice blocks shipping, and restock cost/availability were not established. Customer service saved a draft explaining out-of-stock status, shipment block, and no reliable ETA; draft remains unsent. Recommendation: defer fulfillment until restock can be confirmed; do not promise a date. Fulfillment human decision requested under decision_id 17ebdc44-133d-435b-a44e-8a6669b714cf (pending). Ticket status preserved open.\\n[2026-08-31] System: Run complete; outstanding: 1 payment/purchase request(s) pending; 1 human decision(s) pending; required fulfillment disposition not decided.\\n[2026-08-31] System: Run complete; outstanding: 1 human decision(s) pending; required fulfillment disposition not decided.\\n[2026-08-31] System: Run complete; all requests and required dispositions are decided.\",\"created_at\":\"2026-08-31T09:15:00-04:00\"},\"inventory\":[{\"sku\":\"CC-TEE-WHITE\",\"name\":\"Classic Bulldog Tee\",\"size\":\"S\",\"qty\":0,\"location\":\"Aisle B\"}],\"invoice\":{\"id\":501,\"vendor_id\":1,\"amount\":840.0,\"due_date\":\"2026-08-28\",\"status\":\"paid\",\"description\":\"Rush reprint CC-TEE-WHITE S\"},\"vendor\":{\"id\":1,\"name\":\"Bulldog Print Co\",\"specialty\":\"apparel reprint\",\"lead_days\":5},\"shortfall\":1,\"invoice_overdue\":null,\"invoice_overdue_days\":null,\"shipping_blocked\":false}"
+          }
+        ],
+        "structuredContent": {
+          "found": true,
+          "ticket_id": 101,
+          "shop_today": "2026-08-31",
+          "ticket": {
+            "id": 101,
+            "type": "customer_order",
+            "requester": "Tauhid Zaman",
+            "subject": "Bulldog tee",
+            "sku": "CC-TEE-WHITE",
+            "size": "S",
+            "qty": 1,
+            "lease_id": null,
+            "invoice_id": 501,
+            "status": "resolved",
+            "notes": "Needs a tee in size S.\n[2026-08-31] accounting: Accounting review (shop date 2026-08-31): Linked invoice 501, Bulldog Print Co, is open for $840.00, due 2026-08-28 (3 days overdue per inspection), for rush reprint CC-TEE-WHITE S. Inspection shows shipping blocked and size S stock 0 (shortfall 1). Checking balance is $3,400.00; invoice amount is supported and funds are sufficient. Prepared invoice payment request b2e78b94-6e1b-43fd-b449-8176eab7c7b1 for exactly $840.00 from checking; status pending human approval only. No payment executed. Human decision required: approve or decline this invoice payment request. Vendor lead time is 5 days, so shipping timing remains dependent on vendor fulfillment.\n[2026-08-31] accounting: Accounting check (shop date 2026-08-31): Linked invoice 501 is open and overdue (due 2026-08-28). A payment request for the invoice is pending human review; no approval decision or completed payment is recorded. This pending request is not evidence of approval/payment. Shipping remains blocked per order inspection (size S inventory is 0 and invoice status is open/overdue). Do not state that the order is ready to ship; keep invoice/payment details internal in customer-facing drafts.\n[2026-08-31] customer_service: 2026-08-31 — DRAFT — NOT SENT\n\nHello,\n\nWe’re sorry, but we currently have no Classic Bulldog Tee in size S available; the requested size is out of stock. A restock has not been confirmed. The supplier’s listed lead time is five days, but its shipment is currently blocked, so we can’t provide a reliable arrival date or promise when the item will be available. We’ll need to confirm that restocking can proceed before we can give you an update on timing.\n\nThank you for your understanding.\n\nInternal review: Inventory confirmed zero on hand and a shortfall of one. Accounting reports the related payment request is pending human review, with no approval or payment recorded. Boss/human review is required before any final customer response or resolution. Ticket status remains open.\n[2026-08-31] boss: Manager review (shop date 2026-08-31): MCP inspection shows requested CC-TEE-WHITE, size S, qty 1; on-hand 0, shortfall 1. Linked invoice 501 to Bulldog Print Co is open, $840, due 2026-08-28 (3 days overdue), and shipping-blocking. Vendor listed lead_days=5, but that is not a confirmed arrival estimate while shipping is blocked. Checking balance is $3,400; accounting prepared invoice payment request b2e78b94-6e1b-43fd-b449-8176eab7c7b1 for $840, verified in requests as pending; no payment has occurred. Inventory found Bulldog Print Co as matching apparel/reprint vendor; no PO was prepared because the unpaid invoice blocks shipping, and restock cost/availability were not established. Customer service saved a draft explaining out-of-stock status, shipment block, and no reliable ETA; draft remains unsent. Recommendation: defer fulfillment until restock can be confirmed; do not promise a date. Fulfillment human decision requested under decision_id 17ebdc44-133d-435b-a44e-8a6669b714cf (pending). Ticket status preserved open.\n[2026-08-31] System: Run complete; outstanding: 1 payment/purchase request(s) pending; 1 human decision(s) pending; required fulfillment disposition not decided.\n[2026-08-31] System: Run complete; outstanding: 1 human decision(s) pending; required fulfillment disposition not decided.\n[2026-08-31] System: Run complete; all requests and required dispositions are decided.",
+            "created_at": "2026-08-31T09:15:00-04:00"
+          },
+          "inventory": [
+            {
+              "sku": "CC-TEE-WHITE",
+              "name": "Classic Bulldog Tee",
+              "size": "S",
+              "qty": 0,
+              "location": "Aisle B"
+            }
+          ],
+          "invoice": {
+            "id": 501,
+            "vendor_id": 1,
+            "amount": 840,
+            "due_date": "2026-08-28",
+            "status": "paid",
+            "description": "Rush reprint CC-TEE-WHITE S"
+          },
+          "vendor": {
+            "id": 1,
+            "name": "Bulldog Print Co",
+            "specialty": "apparel reprint",
+            "lead_days": 5
+          },
+          "shortfall": 1,
+          "invoice_overdue": null,
+          "invoice_overdue_days": null,
+          "shipping_blocked": false
+        },
+        "isError": false
+      },
+      "vibe_coder_answer": "Stock on hand is 0, with a shortfall of 1. The linked invoice is 501 and is paid, so it is not overdue; vendor shipping is not blocked.",
+      "db_check": {
+        "sql": [
+          "SELECT t.id AS ticket_id,t.sku,t.size,t.qty AS requested_qty,t.status,i.qty AS stock_on_hand,(t.qty-i.qty) AS shortfall,inv.id AS invoice_id,inv.amount,inv.due_date,inv.status AS invoice_status,CASE WHEN inv.status='paid' THEN 0 WHEN inv.due_date < (SELECT date_today FROM desk LIMIT 1) THEN 1 ELSE 0 END AS overdue,CASE WHEN inv.status='paid' THEN 0 ELSE 1 END AS shipping_blocked FROM tickets t JOIN inventory i ON i.sku=t.sku AND i.size=t.size LEFT JOIN invoices inv ON inv.id=t.invoice_id WHERE t.id=101;"
+        ],
+        "values_found": {
+          "ticket_id": 101,
+          "sku": "CC-TEE-WHITE",
+          "size": "S",
+          "requested_qty": 1,
+          "stock_on_hand": 0,
+          "shortfall": 1,
+          "invoice_id": 501,
+          "amount": 840,
+          "due_date": "2026-08-28",
+          "invoice_status": "paid",
+          "overdue": false,
+          "shipping_blocked": false
+        },
+        "matches": true
+      }
+    },
+    {
+      "prompt": "Ticket 102 is a rent notice. Use the campus-customs MCP tool inspect_rent_notice with ticket_id 102 and report the rent amount, due date, days until due, and whether checking covers the rent.",
+      "tool_name": "inspect_rent_notice",
+      "tool_arguments": {
+        "ticket_id": 102
+      },
+      "tool_output": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"found\":true,\"ticket_id\":102,\"shop_today\":\"2026-08-31\",\"ticket\":{\"id\":102,\"type\":\"rent_notice\",\"requester\":\"Elm City Properties\",\"subject\":\"Rent due\",\"sku\":null,\"size\":null,\"qty\":null,\"lease_id\":1,\"invoice_id\":null,\"status\":\"resolved\",\"notes\":\"Email: shop rent due in 2 days.\\n[2026-08-31] accounting: As of shop date 2026-08-31, lease 1 for Chapel Street shop (Elm City Properties) lists monthly_rent $2,400.00 and next_due 2026-09-02 (2 days away; not yet due). Checking balance is $2,560.00 as of 2026-08-31, sufficient to cover rent. No rent request is pending. No payment request prepared because the rent is not yet due. Facilities timing recommendation: prepare before the due date to allow human review. Human decision required: whether to have Accounting prepare the rent request ahead of 2026-09-02; any payment remains subject to explicit human approval.\\n[2026-08-31] accounting: [2026-08-31] At user direction, prepared a rent payment request ahead of the lease due date. Lease 1 (Chapel Street shop, Elm City Properties) lists monthly rent $2,400 and next_due 2026-09-02. Checking was $2,560 on 2026-08-31. Request 85a18ef3-76ca-4aaa-bcde-30eb6735e893 is PENDING human approval; no payment was executed.\\n[2026-08-31] boss: Manager review (shop date 2026-08-31): Rent notice is for lease 1, Chapel Street shop / Elm City Properties. MCP inspection lists $2,400 monthly rent due 2026-09-02 (2 days away); checking is $2,560 as of 2026-08-31, covering rent by $160. Accounting prepared rent request 85a18ef3-76ca-4aaa-bcde-30eb6735e893 for $2,400 from checking; MCP requests and pending-requests records confirm status pending, with $2,560 available at request. Recommendation: retain request for human review/approval in time for due date; do not execute absent approval. No landlord contact made and no payment executed. Ticket remains open.\\n[2026-08-31] System: Run complete; outstanding: 1 payment/purchase request(s) pending.\\n[2026-08-31] System: Run complete; all requests and required dispositions are decided.\",\"created_at\":\"2026-08-31T11:05:00-04:00\"},\"lease\":{\"id\":1,\"space_name\":\"Chapel Street shop\",\"landlord\":\"Elm City Properties\",\"monthly_rent\":2400.0,\"next_due\":\"2026-10-02\",\"notes\":null},\"cash_accounts\":[{\"name\":\"checking\",\"balance\":160.0,\"date\":\"2026-08-31\"}],\"days_until_due\":32,\"checking_covers_rent\":false}"
+          }
+        ],
+        "structuredContent": {
+          "found": true,
+          "ticket_id": 102,
+          "shop_today": "2026-08-31",
+          "ticket": {
+            "id": 102,
+            "type": "rent_notice",
+            "requester": "Elm City Properties",
+            "subject": "Rent due",
+            "sku": null,
+            "size": null,
+            "qty": null,
+            "lease_id": 1,
+            "invoice_id": null,
+            "status": "resolved",
+            "notes": "Email: shop rent due in 2 days.\n[2026-08-31] accounting: As of shop date 2026-08-31, lease 1 for Chapel Street shop (Elm City Properties) lists monthly_rent $2,400.00 and next_due 2026-09-02 (2 days away; not yet due). Checking balance is $2,560.00 as of 2026-08-31, sufficient to cover rent. No rent request is pending. No payment request prepared because the rent is not yet due. Facilities timing recommendation: prepare before the due date to allow human review. Human decision required: whether to have Accounting prepare the rent request ahead of 2026-09-02; any payment remains subject to explicit human approval.\n[2026-08-31] accounting: [2026-08-31] At user direction, prepared a rent payment request ahead of the lease due date. Lease 1 (Chapel Street shop, Elm City Properties) lists monthly rent $2,400 and next_due 2026-09-02. Checking was $2,560 on 2026-08-31. Request 85a18ef3-76ca-4aaa-bcde-30eb6735e893 is PENDING human approval; no payment was executed.\n[2026-08-31] boss: Manager review (shop date 2026-08-31): Rent notice is for lease 1, Chapel Street shop / Elm City Properties. MCP inspection lists $2,400 monthly rent due 2026-09-02 (2 days away); checking is $2,560 as of 2026-08-31, covering rent by $160. Accounting prepared rent request 85a18ef3-76ca-4aaa-bcde-30eb6735e893 for $2,400 from checking; MCP requests and pending-requests records confirm status pending, with $2,560 available at request. Recommendation: retain request for human review/approval in time for due date; do not execute absent approval. No landlord contact made and no payment executed. Ticket remains open.\n[2026-08-31] System: Run complete; outstanding: 1 payment/purchase request(s) pending.\n[2026-08-31] System: Run complete; all requests and required dispositions are decided.",
+            "created_at": "2026-08-31T11:05:00-04:00"
+          },
+          "lease": {
+            "id": 1,
+            "space_name": "Chapel Street shop",
+            "landlord": "Elm City Properties",
+            "monthly_rent": 2400,
+            "next_due": "2026-10-02",
+            "notes": null
+          },
+          "cash_accounts": [
+            {
+              "name": "checking",
+              "balance": 160,
+              "date": "2026-08-31"
+            }
+          ],
+          "days_until_due": 32,
+          "checking_covers_rent": false
+        },
+        "isError": false
+      },
+      "vibe_coder_answer": "Rent is $2,400.00, due 2026-10-02 in 32 days. Checking does not cover the rent.",
+      "db_check": {
+        "sql": [
+          "SELECT t.id AS ticket_id,l.monthly_rent,l.next_due,(julianday(l.next_due)-julianday((SELECT date_today FROM desk LIMIT 1))) AS days_until_due,c.balance,c.date,(c.balance>=l.monthly_rent) AS checking_covers_rent FROM tickets t JOIN leases l ON l.id=t.lease_id JOIN cash_accounts c ON c.name='checking' WHERE t.id=102;"
+        ],
+        "values_found": {
+          "ticket_id": 102,
+          "rent_amount": 2400,
+          "next_due": "2026-10-02",
+          "days_until_due": 32,
+          "checking_balance": 160,
+          "checking_date": "2026-08-31",
+          "checking_covers_rent": false
+        },
+        "matches": true
+      }
+    },
+    {
+      "prompt": "Ticket 103 is a bulk hoodie discount request. Use the campus-customs MCP tool inspect_price_override with ticket_id 103 and report the stock on hand, shortfall, unit cost, list price, and margin.",
+      "tool_name": "inspect_price_override",
+      "tool_arguments": {
+        "ticket_id": 103
+      },
+      "tool_output": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"found\":true,\"ticket_id\":103,\"shop_today\":\"2026-08-31\",\"ticket\":{\"id\":103,\"type\":\"price_override\",\"requester\":\"Yale AI Club\",\"subject\":\"Bulk hoodie discount\",\"sku\":\"CC-HOOD-NAVY\",\"size\":\"M\",\"qty\":20,\"lease_id\":null,\"invoice_id\":null,\"status\":\"resolved\",\"notes\":\"Student org wants 20 hoodies, size M, asking for a bulk discount.\\n[2026-08-31] customer_service: DRAFT — NOT SENT\\n\\nHi Yale AI Club,\\n\\nThank you for your interest in 20 size-M hoodies. We currently have 8 in stock, so 12 of the requested units are not currently available. We are checking whether additional units can be obtained; no restock timing is confirmed, so we cannot promise a date.\\n\\nYour bulk-discount request is still awaiting a decision. We will follow up once the pricing decision and availability for the remaining units have been confirmed.\\n\\nBest,\\nCustomer Service\\n\\nInternal review: Inventory fact-check confirms 8 on hand and a 12-unit shortfall; allocation is unconfirmed. No payment/approval status or linked invoice is recorded. Boss’s explicit discount decision is pending (human decision request e8a4d9b5-e742-4e58-8f07-6b1ea438492c). Do not send until the discount decision is recorded; then revise to state the explicit decline or, if approved, the specified discount percentage, unit price, and conditions. Ticket remains open.\\n[2026-08-31] accounting: Accounting review (shop date 2026-08-31): inspected price is $58 list and $22 unit cost; only 8 of requested 20 CC-HOOD-NAVY/M are in stock, short 12. For currently available 8 only, cost×1.25 floor is $27.50/unit, maximum discount from list is $30.50/unit (52.59%); at floor gross margin is $5.50/unit (20% of selling price), or $44 across 8. Recommendation: APPROVE WITH CONDITIONS for no more than 8 units at $27.50/unit or higher; do not extend this override/commit to all 20 without stock and cost confirmation. Financial caveat: pending PO request 7eeaac61-92c0-4bb6-92f5-4cfbf2d521dd is for 12 units at $264, while checking balance on 2026-08-31 is $160 (short $104). This PO request is pending human approval, not approved or paid; no payment was prepared by Accounting. Human review required for price override and separate PO funding/approval.\\n[2026-08-31] boss: Manager review (shop date 2026-08-31): Recommend a 10% discount for the 8 size-M units currently in stock only: $52.20/unit; $417.60 total. Pricing check: list $58, unit cost $22, floor at 1.25× cost is $27.50/unit; proposed price is above floor. Do not extend a discount or promise delivery for the 12-unit shortfall without confirming exact SKU stock/cost and getting a separate decision. MCP shows 8 on hand, shortfall 12. Vendor match is Bulldog Print Co (vendor 1), apparel-reprint specialty, 5 lead days; this is a category match only, not SKU availability. A pending PO request exists (request_id 7eeaac61-92c0-4bb6-92f5-4cfbf2d521dd) for $264; checking balance was $160 when requested and remains $160, a $104 gap. The request's expected_arrival 2026-09-05 is not a confirmed customer delivery date. No payment/purchase execution occurred. Human discount decision already pending: decision_id e8a4d9b5-e742-4e58-8f07-6b1ea438492c; new request was duplicate-rejected, so this recommendation is recorded here for that reviewer. Unsent customer draft for review (CS draft did not include explicit terms): “We can offer 10% off the 8 size-M hoodies currently in stock at $52.20 each ($417.60 total), subject to your approval of this offer. We cannot confirm the additional 12 units or a delivery date yet. We’ll need to confirm availability and pricing before discussing any additional units.” Do not send until human discount decision and shortfall availability are resolved.\\n[2026-08-31] System: Run complete; outstanding: 1 payment/purchase request(s) pending; 1 human decision(s) pending; required discount disposition not decided.\\n[2026-08-31] System: Run complete; outstanding: 1 human decision(s) pending; required discount disposition not decided.\\n[2026-08-31] System: Run complete; all requests and required dispositions are decided.\",\"created_at\":\"2026-08-31T16:55:00-04:00\"},\"inventory\":[{\"sku\":\"CC-HOOD-NAVY\",\"name\":\"Basic Hoodie Big Yale\",\"size\":\"M\",\"qty\":8,\"location\":\"Aisle A\"}],\"pricing\":{\"sku\":\"CC-HOOD-NAVY\",\"unit_cost\":22.0,\"list_price\":58.0},\"shortfall\":12,\"margin_per_unit\":36.0,\"margin_percent\":62.06896551724138}"
+          }
+        ],
+        "structuredContent": {
+          "found": true,
+          "ticket_id": 103,
+          "shop_today": "2026-08-31",
+          "ticket": {
+            "id": 103,
+            "type": "price_override",
+            "requester": "Yale AI Club",
+            "subject": "Bulk hoodie discount",
+            "sku": "CC-HOOD-NAVY",
+            "size": "M",
+            "qty": 20,
+            "lease_id": null,
+            "invoice_id": null,
+            "status": "resolved",
+            "notes": "Student org wants 20 hoodies, size M, asking for a bulk discount.\n[2026-08-31] customer_service: DRAFT — NOT SENT\n\nHi Yale AI Club,\n\nThank you for your interest in 20 size-M hoodies. We currently have 8 in stock, so 12 of the requested units are not currently available. We are checking whether additional units can be obtained; no restock timing is confirmed, so we cannot promise a date.\n\nYour bulk-discount request is still awaiting a decision. We will follow up once the pricing decision and availability for the remaining units have been confirmed.\n\nBest,\nCustomer Service\n\nInternal review: Inventory fact-check confirms 8 on hand and a 12-unit shortfall; allocation is unconfirmed. No payment/approval status or linked invoice is recorded. Boss’s explicit discount decision is pending (human decision request e8a4d9b5-e742-4e58-8f07-6b1ea438492c). Do not send until the discount decision is recorded; then revise to state the explicit decline or, if approved, the specified discount percentage, unit price, and conditions. Ticket remains open.\n[2026-08-31] accounting: Accounting review (shop date 2026-08-31): inspected price is $58 list and $22 unit cost; only 8 of requested 20 CC-HOOD-NAVY/M are in stock, short 12. For currently available 8 only, cost×1.25 floor is $27.50/unit, maximum discount from list is $30.50/unit (52.59%); at floor gross margin is $5.50/unit (20% of selling price), or $44 across 8. Recommendation: APPROVE WITH CONDITIONS for no more than 8 units at $27.50/unit or higher; do not extend this override/commit to all 20 without stock and cost confirmation. Financial caveat: pending PO request 7eeaac61-92c0-4bb6-92f5-4cfbf2d521dd is for 12 units at $264, while checking balance on 2026-08-31 is $160 (short $104). This PO request is pending human approval, not approved or paid; no payment was prepared by Accounting. Human review required for price override and separate PO funding/approval.\n[2026-08-31] boss: Manager review (shop date 2026-08-31): Recommend a 10% discount for the 8 size-M units currently in stock only: $52.20/unit; $417.60 total. Pricing check: list $58, unit cost $22, floor at 1.25× cost is $27.50/unit; proposed price is above floor. Do not extend a discount or promise delivery for the 12-unit shortfall without confirming exact SKU stock/cost and getting a separate decision. MCP shows 8 on hand, shortfall 12. Vendor match is Bulldog Print Co (vendor 1), apparel-reprint specialty, 5 lead days; this is a category match only, not SKU availability. A pending PO request exists (request_id 7eeaac61-92c0-4bb6-92f5-4cfbf2d521dd) for $264; checking balance was $160 when requested and remains $160, a $104 gap. The request's expected_arrival 2026-09-05 is not a confirmed customer delivery date. No payment/purchase execution occurred. Human discount decision already pending: decision_id e8a4d9b5-e742-4e58-8f07-6b1ea438492c; new request was duplicate-rejected, so this recommendation is recorded here for that reviewer. Unsent customer draft for review (CS draft did not include explicit terms): “We can offer 10% off the 8 size-M hoodies currently in stock at $52.20 each ($417.60 total), subject to your approval of this offer. We cannot confirm the additional 12 units or a delivery date yet. We’ll need to confirm availability and pricing before discussing any additional units.” Do not send until human discount decision and shortfall availability are resolved.\n[2026-08-31] System: Run complete; outstanding: 1 payment/purchase request(s) pending; 1 human decision(s) pending; required discount disposition not decided.\n[2026-08-31] System: Run complete; outstanding: 1 human decision(s) pending; required discount disposition not decided.\n[2026-08-31] System: Run complete; all requests and required dispositions are decided.",
+            "created_at": "2026-08-31T16:55:00-04:00"
+          },
+          "inventory": [
+            {
+              "sku": "CC-HOOD-NAVY",
+              "name": "Basic Hoodie Big Yale",
+              "size": "M",
+              "qty": 8,
+              "location": "Aisle A"
+            }
+          ],
+          "pricing": {
+            "sku": "CC-HOOD-NAVY",
+            "unit_cost": 22,
+            "list_price": 58
+          },
+          "shortfall": 12,
+          "margin_per_unit": 36,
+          "margin_percent": 62.06896551724138
+        },
+        "isError": false
+      },
+      "vibe_coder_answer": "Stock on hand is 8, with a shortfall of 12. Unit cost is $22.00, list price is $58.00, and margin is $36.00 per unit (62.06896551724138%).",
+      "db_check": {
+        "sql": [
+          "SELECT t.id AS ticket_id,t.sku,t.size,t.qty AS requested_qty,i.qty AS stock_on_hand,(t.qty-i.qty) AS shortfall,p.unit_cost,p.list_price,(p.list_price-p.unit_cost) AS margin_per_unit,((p.list_price-p.unit_cost)/p.list_price*100) AS margin_percent FROM tickets t JOIN inventory i ON i.sku=t.sku AND i.size=t.size JOIN pricing p ON p.sku=t.sku WHERE t.id=103;"
+        ],
+        "values_found": {
+          "ticket_id": 103,
+          "sku": "CC-HOOD-NAVY",
+          "size": "M",
+          "requested_qty": 20,
+          "stock_on_hand": 8,
+          "shortfall": 12,
+          "unit_cost": 22,
+          "list_price": 58,
+          "margin_per_unit": 36,
+          "margin_percent": 62.06896551724138
+        },
+        "matches": true
+      }
+    }
+  ]
+}
