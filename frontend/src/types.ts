@@ -34,7 +34,20 @@ export type Approval = {
   approved_by?: string;
   rejected_by?: string;
 };
-export type HumanDecision = { decision_id: string; ticket_id: number; kind: string; question: string; recommendation: string; options: string[]; status: string; created_at: string; choice?: string; decided_by?: string; decided_at?: string; terms?: string };
+export type HumanDecision = {
+  decision_id: string;
+  ticket_id: number;
+  kind: string;
+  question: string;
+  recommendation: string;
+  options: string[];
+  status: string;
+  created_at: string;
+  choice?: string;
+  decided_by?: string;
+  decided_at?: string;
+  terms?: string;
+};
 export type Payment = {
   id: number;
   kind: string;
@@ -53,7 +66,9 @@ export type Run = {
 };
 export type SummaryAgent = {
   agent: Role;
-  summary: string;
+  outcome: string;
+  run_end_status: string;
+  full_answer: string;
   tools: string[];
   delegated_to: string[];
 };
@@ -61,6 +76,25 @@ export type TicketSummary = {
   ticket_id: number;
   run_id: string | null;
   agents: SummaryAgent[];
+  disposition?: {
+    requests: {
+      id: string;
+      kind: string;
+      amount?: number;
+      status: string;
+      decided_by?: string;
+    }[];
+    decisions: {
+      id: string;
+      kind: string;
+      choice?: string;
+      terms?: string;
+      decided_by?: string;
+      decided_at?: string;
+    }[];
+    final_status?: string;
+    remaining_actions: string[];
+  };
   delegation_attempts?: number;
   delegation_successes?: number;
   returned_models?: { model_name: string; provider_name?: string | null }[];

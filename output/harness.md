@@ -4,7 +4,7 @@ This harness documents the database schema and the information agents use while 
 
 ## Database reference
 
-The original database is `data/campus_customs.db`. The working copy for later updates is `data/campus_customs_new.db`.
+The original database is `data/campus_customs.db`. The working copy for later updates is `data/campus_customs_new.db`. Before a clean run, use `curl -X POST http://localhost:8000/reset` with the backend running, or `.venv/bin/python -m backend.reset` with it stopped. Both copy the original database to the working copy and clear pending requests, decisions, and session state. A bare `cp` alone is NOT a complete reset.
 
 The shop's current date is stored in `desk.date_today` (`2026-08-31` in the original database). Agents should use it when determining overdue invoices, rent, or other deadlines.
 
@@ -170,7 +170,7 @@ Delegation targets: Boss may delegate to Inventory, Accounting, Facilities, or C
 |---|---|---|
 | `list_open_tickets()` | `tickets` | Boss/agents may call it to get the current open queue. |
 | `list_tickets()` | `tickets` | Backend/dashboard may call it to show all ticket statuses. |
-| `set_ticket_status(ticket_id, status, note)` | `tickets`, `desk` | Backend-only; sets open, awaiting_approval, or resolved status and records an optional reason note. Filtered from agents. |
+| `set_ticket_status(ticket_id, status, note)` | `tickets`, `desk` | Backend-only; backend may set open, awaiting_approval, awaiting_decision, or resolved and records an optional reason note. Filtered from agents. |
 | `get_cash_balance(account)` | `cash_accounts` | Backend/dashboard and agents may call it to read available cash. |
 | `list_pending_requests(ticket_id)` | `output/pending_approvals.json` | Agents may read pending requests, optionally by ticket, to avoid duplicate preparations. |
 | `list_requests(ticket_id)` | `output/pending_approvals.json` | Agents and dashboard may read all pending, used, and rejected requests, optionally by ticket. |
@@ -178,7 +178,7 @@ Delegation targets: Boss may delegate to Inventory, Accounting, Facilities, or C
 | `find_restock_vendors(sku)` | `inventory`, `pricing`, `vendors`, `invoices` | Agents may call it to match products, lead time, and shipping blocks. |
 | `prepare_payment(kind, ref_id, amount, account, ticket_id)` | `cash_accounts`, `invoices`, `leases`; writes `output/pending_approvals.json` | Agents must prepare a human request for a valid ticket obligation, recording optional `ticket_id`; it does not change cash and refuses duplicate pending obligations. |
 | `prepare_purchase_order(sku, size, qty, vendor_id, account, ticket_id)` | `inventory`, `pricing`, `vendors`, `invoices`, `cash_accounts`, `desk`; writes `output/pending_approvals.json` | Agents must prepare a human purchase request for an unblocked shortfall, recording optional `ticket_id`; it does not change inventory or cash and refuses duplicate pending orders. |
-| `execute_approved_payment(request_id, approved_by)` | `payments`, `cash_accounts`, `invoices`, `leases`, `desk`; updates `output/pending_approvals.json` | Human/backend-only; executes an approved request. Filtered from agents. |
+| `execute_approved_payment(request_id, approved_by)` | `payments`, `cash_accounts`, `invoices`, `leases`, `pricing`, `vendors`, `inventory`, `desk`; reads and updates `output/pending_approvals.json` | Human/backend-only; executes an approved request. Filtered from agents. |
 | `reject_payment_request(request_id, rejected_by)` | `output/pending_approvals.json` | Human/backend-only; rejects a pending request without changing cash. Filtered from agents. |
 | `request_human_decision(ticket_id, kind, question, recommendation, options)` | `output/pending_decisions.json` | Agent-facing; creates a locked pending discount, fulfillment, or other decision request without changing ticket status; refuses duplicate pending ticket/kind. |
 | `list_decisions(ticket_id, status)` | `output/pending_decisions.json` | Agent/dashboard read of decision requests and outcomes. |

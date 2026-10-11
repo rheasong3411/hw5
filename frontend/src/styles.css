@@ -215,7 +215,11 @@ h1 {
   font: bold 8px monospace;
   transform: rotate(-6deg);
 }
-.awaiting-decision-stamp { color: #55718a; border-color: #8ca8be; background: #e5edf3; }
+.awaiting-decision-stamp {
+  color: #55718a;
+  border-color: #8ca8be;
+  background: #e5edf3;
+}
 .board-note {
   margin-top: 22px;
   color: #f0d5b3;
@@ -1007,6 +1011,12 @@ h1 {
 }
 .run-summary article b {
   font-size: 12px;
+}
+.run-summary article small.run-end-status {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 9px;
 }
 .run-summary article p {
   margin: 4px 0;

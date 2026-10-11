@@ -407,8 +407,24 @@ The reflection's "solvable" examples repeated the three completed tickets instea
 
 ### Follow-up prompt
 
-No follow-up prompt was needed.
+> These are the places I would question as a grader:
+>
+> | Weak spot | What I found | Grading concern |
+> |---|---|---|
+> | Dashboard summaries omit the outcome | /tickets/{ticket_id}/summary keeps only the first 420 characters of each agent's final answer. Those characters mostly introduce evidence; recommendations and pending actions appear later. The "more" button cannot recover text the backend already removed. | Problem 8 asks for useful agent summaries. A reviewer may see a resolved ticket without being able to read what the agent ultimately recommended. |
+> | Rent completion still has a loophole | re_evaluate_ticket() requires discount and fulfillment decisions, but does not require a rent request or rent disposition. A normally completed rent run that prepares nothing can still become resolved. | The submitted 102 payment is correct, but the app does not consistently enforce its documented completion rules. Existing tests cover rent with a used request, not the missing-request case. |
+> | README offers an incomplete reset alternative | It says copying the original database is an alternative to /reset. That copy leaves previous payment requests, human decisions, and session history intact. | A grader following that documented alternative may start with fresh cash but stale decisions and run history. The clean-run instructions should consistently use /reset. |
+> | Some harness descriptions are inaccurate | The execute_approved_payment table omits the pricing, vendors, inventory, and invoices reads used for PO validation. The status-tool description omits awaiting_decision. | Problem 5 explicitly asks for complete tool/table documentation. These are concrete documentation gaps. |
+> | Future scenarios need explicit prerequisites | The mug, courier, and cap scenarios assume new tickets, and the courier invoice, already exist in the database. There is no tool to create those records. The cap example also mentions obtaining a vendor quote, which the current tools cannot do. | Problem 10 asks what the team can solve with the tools built. Clearly distinguish handling an existing supported record from creating records or obtaining quotes. |
+>
+> The highest-priority fix is the dashboard summary. Return a concise outcome that includes the recommendation, request IDs, remaining actions, and human disposition. Keep the full answer available when expanded. For example, ticket 103 should visibly explain the rejected $264 PO and the separately approved 10% offer for eight units.
+>
+> I would also strengthen the reflection's criticism of agent performance. The final runs repeatedly attempted self-delegation despite explicit instructions, and ticket 103 created a vague decision request that blocked Boss's concrete replacement. The guards prevented those mistakes from escalating, but that is evidence of effective safeguards and weak agent orchestration. Say that plainly when evaluating performance.
+>
+> What I would give strong credit for remains: correct cash reconciliation and payment records; recorded human decisions before final resolution; preserved Expected plans and specific Actual comparisons; complete major deliverables and a creative React dashboard; passing tests/build and a publicly cloneable repository matching the reviewed zip.
+>
+> I would not confidently award 100 yet. I would fix the summary truncation, rent completion guard, and reset instructions first, then correct the harness and qualify the future scenarios. Those changes address specific weaknesses; the recorded final run does not need replacing merely to improve the write-up.
 
 ### What was lacking after the first attempt
 
-Nothing was lacking after the first attempt.
+The first pushed submission cut agent summaries to 420 characters so the dashboard hid each agent's actual recommendation, let a rent ticket resolve without any rent request, documented an incomplete copy-the-database reset, had inaccurate harness tool/table and status descriptions, and its future-scenario reflection assumed records the tools can't create.

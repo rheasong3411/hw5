@@ -11,7 +11,7 @@ The server provides these tools:
 - `inspect_price_override(ticket_id)` — reads a price-override ticket, requested SKU/size inventory, and SKU pricing, then computes the stock shortfall, margin per unit, and margin percent. It supports ticket 103.
 - `list_open_tickets()` — lists open work from `tickets`.
 - `list_tickets()` — lists all tickets and statuses for the dashboard.
-- `set_ticket_status(ticket_id, status, note)` — updates a ticket status and optional board note; backend-only.
+- `set_ticket_status(ticket_id, status, note)` — backend-only; backend may set `open`, `awaiting_approval`, `awaiting_decision`, or `resolved`, and records an optional board note. Filtered from agents.
 - `get_cash_balance(account)` — returns a cash-account balance for the dashboard.
 - `list_pending_requests(ticket_id)` — reads pending approval records so agents can avoid preparing a duplicate obligation.
 - `list_requests(ticket_id)` — reads all payment and purchase requests, including pending, used, and rejected decisions.
@@ -19,7 +19,7 @@ The server provides these tools:
 - `find_restock_vendors(sku)` — reads `inventory`, `pricing`, `vendors`, and `invoices` to match products to vendors using product fields, vendor specialties, or SKU-bearing invoice descriptions; returns match reasons, lead days, and shipping blocks.
 - `prepare_payment(kind, ref_id, amount, account, ticket_id)` — reads `cash_accounts` plus the validating `invoices` or `leases` obligation. It accepts only an exact open invoice or exact lease rent request, writes a pending request with optional `ticket_id` to `output/pending_approvals.json`, and does not change the database. It refuses a duplicate pending obligation.
 - `prepare_purchase_order(sku, size, qty, vendor_id, account, ticket_id)` — validates product/vendor, unpaid invoices, cost, cash, and arrival date, then records a pending purchase with optional `ticket_id` without changing inventory. It refuses a duplicate pending order.
-- `execute_approved_payment(request_id, approved_by)` — reads the pending-request file and `cash_accounts`, `invoices` or `leases`, and `desk`; on success writes `payments`, updates cash and the linked obligation, and marks the pending request used. This tool is filtered from agent toolsets and is called by the separate human approval script.
+- `execute_approved_payment(request_id, approved_by)` — reads the pending-request file and `cash_accounts`, `invoices`, `leases`, `pricing`, `vendors`, `inventory`, and `desk` (purchase-order validation); on success writes `payments`, updates cash and the linked obligation, and marks the pending request used. This tool is filtered from agent toolsets and is called by the separate human approval script.
 - `reject_payment_request(request_id, rejected_by)` — marks a pending payment or purchase request rejected without changing cash. This human-only tool is called by the backend reject route.
 - `append_ticket_note(ticket_id, agent, note)` — appends a draft/review note without changing ticket status; it never sends communications.
 - `request_human_decision(ticket_id, kind, question, recommendation, options)` — agent-facing. Records a pending human decision (`discount`, `fulfillment`, or `other`) in `output/pending_decisions.json` under a file lock, with a decision id and UTC `created_at`. It refuses a duplicate pending decision of the same kind for the ticket and never changes ticket status.

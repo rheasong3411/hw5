@@ -123,7 +123,7 @@ def list_tickets() -> list[dict[str, Any]]:
 
 @mcp.tool
 def set_ticket_status(ticket_id: int, status: str, note: str = "") -> dict[str, Any]:
-    """Set a ticket status after a successful run, preserving a concise board note."""
+    """Backend-only: set open, awaiting_approval, awaiting_decision, or resolved and preserve a board note. Agents cannot call this tool."""
     if status not in {"open", "awaiting_approval", "awaiting_decision", "resolved"}:
         return {"updated": False, "message": "Ticket status must be open, awaiting_approval, awaiting_decision, or resolved."}
     with sqlite3.connect(DATABASE_PATH) as connection:

@@ -2,7 +2,6 @@
 import asyncio
 import json
 import os
-import shutil
 import sys
 from pathlib import Path
 from typing import Any
@@ -169,6 +168,12 @@ async def re_evaluate_ticket(ticket_id: int, run: dict[str, Any] | None = None):
     if pending_decisions: outstanding.append(f"{len(pending_decisions)} human decision(s) pending")
     required_kind = None
     if ticket.get("type") == "price_override": required_kind = "discount"
+    elif ticket.get("type") == "rent_notice":
+        rent_requests = [r for r in requests if r.get("kind") == "rent"]
+        if not rent_requests:
+            outstanding.append("no rent payment request prepared; human must decide")
+        elif any(r.get("status") == "pending" for r in rent_requests):
+            outstanding.append("rent payment request pending")
     elif ticket.get("type") == "customer_order":
         inspected = await mcp_call("inspect_customer_order", {"ticket_id": ticket_id})
         if (inspected.get("shortfall") or 0) > 0: required_kind = "fulfillment"
@@ -176,7 +181,7 @@ async def re_evaluate_ticket(ticket_id: int, run: dict[str, Any] | None = None):
         outstanding.append(f"required {required_kind} disposition not decided")
     if outstanding:
         status = "awaiting_approval" if pending_payments else "awaiting_decision"
-        reason = "Run complete; outstanding: " + "; ".join(outstanding) + "."
+        reason = "no rent payment request prepared; human must decide" if "no rent payment request prepared; human must decide" in outstanding else "Run complete; outstanding: " + "; ".join(outstanding) + "."
         return await change_ticket_status(ticket_id, status, reason, run["run_id"])
     result = await change_ticket_status(ticket_id, "resolved", "Run complete; all requests and required dispositions are decided.", run["run_id"])
     event("human-decision", 900, "system", "final_disposition", ticket_id, {
@@ -435,7 +440,7 @@ async def summary(
         if agent == "system":
             continue
         item = agents.setdefault(
-            agent, {"agent": agent, "summary": "", "tools": [], "delegated_to": []}
+            agent, {"agent": agent, "outcome": "", "run_end_status": "", "full_answer": "", "tools": [], "delegated_to": []}
         )
         detail = record.get("detail", {})
         if record.get("agent") == "boss" and record.get("action") == "final_output":
@@ -445,12 +450,165 @@ async def summary(
                 "returned_models": detail.get("returned_models", []),
             }
         if record.get("action") == "final_output":
-            item["summary"] = str(detail.get("result", ""))[:420]
+            item["full_answer"] = str(detail.get("result", ""))
         if record.get("action") == "tool_call" and detail.get("tool_name"):
             item["tools"].append(detail["tool_name"])
         if record.get("action") == "delegation_requested" and detail.get("to_agent"):
             item["delegated_to"].append(detail["to_agent"])
-    return {"ticket_id": ticket_id, "run_id": selected, "agents": list(agents.values()), **run_summary}
+    for item in agents.values():
+        item["outcome"], item["run_end_status"] = _agent_outcome(item["full_answer"], item["agent"])
+    requests = [r for r in await mcp_call("list_requests", {"ticket_id": ticket_id}) if r.get("session_id", "legacy") == session_id]
+    decisions = [d for d in await mcp_call("list_decisions", {"ticket_id": ticket_id}) if d.get("session_id", "legacy") == session_id]
+    ticket_rows = await mcp_call("list_tickets")
+    ticket = next((t for t in ticket_rows if t.get("id") == ticket_id), {})
+    remaining = [f"Request {r.get('request_id')} is pending" for r in requests if r.get("status") == "pending"]
+    remaining += [f"Decision {d.get('decision_id')} is pending" for d in decisions if d.get("status") == "pending"]
+    if "boss" in agents:
+        boss = agents["boss"]
+        refs = [str(r.get("request_id")) for r in requests if r.get("request_id")]
+        refs += [str(d.get("decision_id")) for d in decisions if d.get("decision_id")]
+        if refs:
+            boss["outcome"] = f"{boss['outcome']} Reported ids: {', '.join(ref[:8] for ref in refs)}."
+    status_events = [r for r in _read_audit() if r.get("ticket_id") == ticket_id and r.get("action") == "ticket_status_changed" and _session_matches(r, session_id, all_sessions)]
+    final_status = (status_events[-1].get("detail", {}).get("to") if status_events else ticket.get("status"))
+    return {"ticket_id": ticket_id, "run_id": selected, "agents": list(agents.values()), "disposition": {
+        "requests": [{"id": r.get("request_id"), "kind": r.get("kind"), "amount": r.get("amount"), "status": r.get("status"), "decided_by": r.get("approved_by") or r.get("rejected_by")} for r in requests],
+        "decisions": [{"id": d.get("decision_id"), "kind": d.get("kind"), "choice": d.get("choice"), "terms": d.get("terms"), "decided_by": d.get("decided_by"), "decided_at": d.get("decided_at")} for d in decisions],
+        "final_status": final_status, "remaining_actions": remaining}, **run_summary}
+
+
+def _agent_outcome(answer: str, agent: str) -> tuple[str, str]:
+    import re
+
+    lines = answer.splitlines()
+    status_lines = [re.sub(r"^\s*(?:[-*+]\s*)?", "", line).strip() for line in lines if re.match(r"^\s*(?:[-*+]\s*)?STATUS\s*:", line, re.I)]
+    status_match = re.search(r"STATUS\s*:\s*([\w.-]+)", status_lines[-1], re.I) if status_lines else None
+    run_end_status = status_match.group(1) if status_match else ""
+    lines = [line for line in lines if not re.match(r"^\s*(?:[-*+]\s*)?STATUS\s*:", line, re.I)]
+    text = "\n".join(lines)
+
+    # Markdown headings and standalone bold labels delimit sections. Keep underscores
+    # intact because they can be meaningful inside identifiers and status values.
+    targets = re.compile(r"\b(recommendation|recommended|decision|outcome|result|findings)\b", re.I)
+    heading_re = re.compile(r"(?m)^\s{0,3}(?:#{1,6}\s+[^\n]*|\*\*[^*\n]+\*\*\s*:?[ \t]*|[A-Za-z][^\n:]{0,70}:)[ \t]*$")
+    label_re = re.compile(
+        r"(?im)^\s{0,3}(?:#{1,6}\s*)?(?:\*\*)?(?P<label>[^\n:*]+)(?:\*\*)?\s*:\s*(?P<inline>[^\n]*)$"
+    )
+    candidates = [
+        (m.start(), m.end(), m.group("label"), m.group("inline"))
+        for m in label_re.finditer(text)
+        if targets.search(m.group("label")) and not m.group("label").lstrip().startswith(("- ", "+ "))
+    ]
+    bold_inline_re = re.compile(
+        r"(?m)^\s{0,3}(?:[-*+]\s+)?\*\*(?P<label>[^*:\n]+):\*\*\s*(?P<inline>[^\n]*)$"
+    )
+    candidates.extend(
+        (m.start(), m.end(), m.group("label"), m.group("inline"))
+        for m in bold_inline_re.finditer(text)
+        if targets.search(m.group("label"))
+    )
+    bold_heading_re = re.compile(r"(?m)^\s{0,3}\*\*(?P<label>[^*\n]+)\*\*\s*:?[ \t]*$")
+    candidates.extend(
+        (m.start(), m.end(), m.group("label").rstrip(":"), "")
+        for m in bold_heading_re.finditer(text)
+        if targets.search(m.group("label"))
+    )
+    markdown_heading_re = re.compile(r"(?m)^\s{0,3}#{1,6}\s+(?P<label>[^\n]+)$")
+    candidates.extend(
+        (m.start(), m.end(), m.group("label"), "")
+        for m in markdown_heading_re.finditer(text)
+        if targets.search(m.group("label"))
+    )
+    recommendations = [
+        candidate for candidate in candidates
+        if re.search(r"\b(recommendation|recommended)\b", candidate[2], re.I)
+    ]
+    selected = max(recommendations or candidates, key=lambda candidate: candidate[0]) if candidates else None
+    section = ""
+    if selected:
+        _, end, _, inline = selected
+        section = (inline + "\n" if inline else "") + text[end:]
+        next_heading = heading_re.search(section)
+        if next_heading:
+            section = section[:next_heading.start()]
+    else:
+        paragraphs = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+        substantive = [p for p in paragraphs if not all(heading_re.fullmatch(line.strip()) for line in p.splitlines() if line.strip())]
+        section = ""
+        for paragraph in reversed(substantive):
+            first_line = paragraph.splitlines()[0].strip()
+            if re.match(r"^(?:\*\*)?[\w /-]{1,70}(?:\*\*)?:\s*$", first_line):
+                continue
+            cleaned = re.sub(r"`([^`]*)`", r"\1", paragraph)
+            cleaned = re.sub(r"\*\*|__|[*#>`~]", "", cleaned)
+            cleaned = re.sub(r"(?<!\w)_(?!\w)", "", cleaned)
+            cleaned = re.sub(r"(?m)^\s*[-+]\s+", "", cleaned)
+            cleaned = re.sub(r"\s+", " ", cleaned).strip()
+            if re.search(r"[.!?][\"')\]]*$", cleaned):
+                section = paragraph
+                break
+
+    # Strip markdown punctuation while preserving underscores within words.
+    section = re.sub(r"`([^`]*)`", r"\1", section)
+    section = re.sub(r"\*\*|__|[*#>`~]", "", section)
+    section = re.sub(r"(?<!\w)_(?!\w)", "", section)
+    section = re.sub(r"(?m)^\s*[-+]\s+", "", section)
+    section = re.sub(r"\s+", " ", section).strip()
+    sentences = _split_outcome_sentences(section)
+    limit = 4 if selected else 3
+    chosen: list[str] = []
+    for sentence in sentences:
+        sentence = sentence.strip()
+        if not sentence or not re.search(r"[.!?][\"')\]]*$", sentence):
+            continue
+        if len(" ".join(chosen + [sentence])) > 450:
+            break
+        chosen.append(sentence)
+        if len(chosen) >= limit:
+            break
+    if not chosen and selected:
+        paragraphs = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+        for paragraph in reversed(paragraphs):
+            if all(heading_re.fullmatch(line.strip()) for line in paragraph.splitlines() if line.strip()):
+                continue
+            if re.match(r"^(?:[-*+]\s+)?\*\*[^*]+:\*\*\s*$", paragraph.splitlines()[0].strip()):
+                continue
+            fallback = re.sub(r"`([^`]*)`", r"\1", paragraph)
+            fallback = re.sub(r"\*\*|__|[*#>`~]", "", fallback)
+            fallback = re.sub(r"(?<!\w)_(?!\w)", "", fallback)
+            fallback = re.sub(r"(?m)^\s*[-+*]\s+", "", fallback)
+            fallback = re.sub(r"\s+", " ", fallback).strip()
+            fallback_sentences = _split_outcome_sentences(fallback)
+            fallback_chosen = [
+                s.strip() for s in fallback_sentences
+                if s.strip() and re.search(r"[.!?][\"')\]]*$", s.strip())
+            ]
+            if fallback_chosen:
+                chosen = fallback_chosen[:3]
+                break
+    return " ".join(chosen), run_end_status
+
+
+def _split_outcome_sentences(text: str) -> list[str]:
+    """Split at sentence punctuation followed by whitespace and a capital."""
+    import re
+
+    abbreviations = re.compile(r"(?:\bi\.e|\be\.g|\bco)\.$", re.I)
+    boundaries = []
+    for match in re.finditer(r"[.!?](?:[\"')\]]*)\s+(?=[A-Z\"'“])", text):
+        punctuation = match.start()
+        if text[punctuation] == ".":
+            before = text[:punctuation + 1]
+            if (punctuation > 0 and text[punctuation - 1].isdigit()
+                    and punctuation + 1 < len(text) and text[punctuation + 1].isdigit()):
+                continue
+            if abbreviations.search(before):
+                continue
+        boundaries.append(match.end())
+    return [
+        text[start:end].strip()
+        for start, end in zip([0] + boundaries, boundaries + [len(text)])
+    ]
 
 
 @app.post("/reset")
@@ -462,12 +620,6 @@ async def reset():
         await asyncio.gather(*active, return_exceptions=True)
     RUN_TASKS.clear()
     RUNS.clear()
-    shutil.copy2(ROOT / "data" / "campus_customs.db", ROOT / "data" / "campus_customs_new.db")
-    pending_path = Path(os.environ.get("CAMPUS_CUSTOMS_PENDING", ROOT / "output" / "pending_approvals.json"))
-    pending_path.write_text("[]\n")
-    decisions_path = Path(os.environ.get("CAMPUS_CUSTOMS_DECISIONS", ROOT / "output" / "pending_decisions.json"))
-    decisions_path.write_text("[]\n")
-    session_id = str(uuid4())
-    SESSION_PATH.write_text(json.dumps({"session_id": session_id}) + "\n")
-    event("reset", 1, "system", "database_reset", None, {"session_id": session_id}, session_id=session_id)
+    from backend.reset import reset_workspace
+    session_id = reset_workspace()
     return {"reset": True, "session_id": session_id}

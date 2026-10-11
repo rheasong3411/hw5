@@ -59,9 +59,35 @@ def test_final_disposition_requires_ticket_type_specific_decisions(monkeypatch):
         await main.re_evaluate_ticket(103, run2); assert status[103] == "resolved"
         run3 = {"run_id":"r3", "ticket_id":102,"status":"completed"}
         monkeypatch.setattr(main, "_audit_runs", lambda _sid=None: {"r3":run3})
+        await main.re_evaluate_ticket(102, run3); assert status[102] == "awaiting_decision"
         requests.append({"ticket_id":102,"status":"used","session_id":session,"kind":"rent"})
         await main.re_evaluate_ticket(102, run3); assert status[102] == "resolved"
     asyncio.run(go())
+
+
+def test_reset_clears_pending_files_and_starts_new_session(tmp_path, monkeypatch):
+    import backend.reset as reset
+    import backend.audit as audit
+    original, working = tmp_path / "original.db", tmp_path / "working.db"
+    pending, decisions, session, audit_path = (tmp_path / n for n in ("pending.json", "decisions.json", "session.json", "audit.json"))
+    original.write_bytes(b"seed database")
+    working.write_bytes(b"dirty database")
+    pending.write_text('[{"status":"pending"}]')
+    decisions.write_text('[{"status":"pending"}]')
+    session.write_text('{"session_id":"old"}')
+    monkeypatch.setenv("CAMPUS_CUSTOMS_ORIGINAL_DB", str(original))
+    monkeypatch.setenv("CAMPUS_CUSTOMS_DB", str(working))
+    monkeypatch.setenv("CAMPUS_CUSTOMS_PENDING", str(pending))
+    monkeypatch.setenv("CAMPUS_CUSTOMS_DECISIONS", str(decisions))
+    monkeypatch.setenv("CAMPUS_CUSTOMS_SESSION", str(session))
+    monkeypatch.setattr(audit, "AUDIT_PATH", audit_path)
+    monkeypatch.setattr(audit, "SESSION_PATH", session)
+    session_id = reset.reset_workspace()
+    assert working.read_bytes() == original.read_bytes()
+    assert json.loads(pending.read_text()) == []
+    assert json.loads(decisions.read_text()) == []
+    assert json.loads(session.read_text())["session_id"] == session_id != "old"
+    assert json.loads(audit_path.read_text())[-1]["action"] == "database_reset"
 
 
 def test_duplicate_queued_run_is_rejected_atomically(monkeypatch):

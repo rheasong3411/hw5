@@ -22,13 +22,13 @@ Put your `PORTKEY_API_KEY` in `.env`. Never commit `.env`, and never print or sh
 
 ## 1. Clean run
 
-Copy the untouched original database to the working copy before a fresh run:
+Reset all run state before a fresh run. With the backend running, use:
 
 ```bash
-cp data/campus_customs.db data/campus_customs_new.db
+curl -X POST http://localhost:8000/reset
 ```
 
-`data/campus_customs.db` is the untouched original seed. `data/campus_customs_new.db` is the working SQLite copy read by MCP and updated by its guarded database tools; approval requests live separately in `output/pending_approvals.json`. The backend reset endpoint performs the same restore and clears pending requests. For isolated tests, MCP accepts `CAMPUS_CUSTOMS_DB`, `CAMPUS_CUSTOMS_PENDING`, and `CAMPUS_CUSTOMS_DECISIONS` environment paths.
+With the backend stopped, run `.venv/bin/python -m backend.reset`. Both reset methods copy the original database to the working copy and clear pending requests, decisions, and session state. A bare `cp` alone is NOT a complete reset. `data/campus_customs.db` remains the untouched original seed; MCP uses `data/campus_customs_new.db` as its working database. Isolated tests can set `CAMPUS_CUSTOMS_DB`, `CAMPUS_CUSTOMS_PENDING`, `CAMPUS_CUSTOMS_DECISIONS`, and `CAMPUS_CUSTOMS_SESSION` to temporary paths.
 
 ## 2. Start the MCP server
 
@@ -66,7 +66,7 @@ Reset before starting. Either click nothing yet and run:
 curl -X POST http://localhost:8000/reset
 ```
 
-or perform the clean-copy step above. Confirm the starting checking balance is `$3,400.00` with `GET /balance`. On the board, select tickets 101, 102, and 103 one at a time and click **Start agent team** for each. The team prepares payment receipts and human decision cards but does not execute payments or make those decisions. On the manager's desk, approve/reject receipts and select an option on every decision card; confirm the terms field, which starts with Boss's recommendation. The signed-in name is recorded with the decision. Ticket 101 requires a fulfillment decision, ticket 102 resolves after its rent request is decided, and ticket 103 requires a discount decision even if its purchase request is rejected. Then compare the results against `output/desk_tickets.html`. The decision routes are `GET /decisions` and `POST /decisions/{decision_id}` with `{decided_by, choice, terms}`.
+or, with the backend stopped, run `.venv/bin/python -m backend.reset`. Both reset methods copy the original database to the working copy and clear pending requests, decisions, and session state; a bare `cp` alone is NOT a complete reset. Confirm the starting checking balance is `$3,400.00` with `GET /balance`. On the board, select tickets 101, 102, and 103 one at a time and click **Start agent team** for each. The team prepares payment receipts and human decision cards but does not execute payments or make those decisions. On the manager's desk, approve/reject receipts and select an option on every decision card; confirm the terms field, which starts with Boss's recommendation. The signed-in name is recorded with the decision. Ticket 101 requires a fulfillment decision, ticket 102 resolves after its rent request is decided, and ticket 103 requires a discount decision even if its purchase request is rejected. Then compare the results against `output/desk_tickets.html`. The decision routes are `GET /decisions` and `POST /decisions/{decision_id}` with `{decided_by, choice, terms}`.
 
 Optional CLI workflow:
 

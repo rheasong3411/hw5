@@ -31,6 +31,7 @@ def test_run_status_lifecycle_obeys_human_requests(monkeypatch):
     main = importlib.reload(main)
     status = {"value": "open"}
     pending = []
+    reasons = []
 
     async def fake_mcp(name, args=None):
         if name == "list_requests":
@@ -40,6 +41,7 @@ def test_run_status_lifecycle_obeys_human_requests(monkeypatch):
             return [{"id": 101, "type": "rent_notice", "status": status["value"]}]
         if name == "set_ticket_status":
             status["value"] = args["status"]
+            reasons.append(args["note"])
             return {"updated": True, "status": status["value"]}
         raise AssertionError(name)
 
@@ -55,13 +57,17 @@ def test_run_status_lifecycle_obeys_human_requests(monkeypatch):
         pending.clear()
         latest = {"run_id": "run-test", "ticket_id": 101, "status": "completed"}
         await main.re_evaluate_ticket(101, latest)
+        assert status["value"] == "awaiting_decision"
+        assert reasons[-1] == "no rent payment request prepared; human must decide"
+        pending.append({"status": "used", "kind": "rent", "ticket_id": 101, "session_id": main.current_session_id()})
+        await main.re_evaluate_ticket(101, latest)
         assert status["value"] == "resolved"
         main.RUNS["run-open"] = {"run_id": "run-open", "ticket_id": 101, "status": "running"}
         await main.finish_run_status("run-open", 101, "Review complete\nSTATUS: needs_human")
         assert status["value"] == "resolved"
 
     asyncio.run(scenario())
-    assert sum(args[3] == "ticket_status_changed" for args, _ in changes) == 2
+    assert sum(args[3] == "ticket_status_changed" for args, _ in changes) == 3
     assert sum(args[3] == "final_disposition" for args, _ in changes) == 2
 
 
